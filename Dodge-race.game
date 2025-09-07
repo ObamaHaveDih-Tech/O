@@ -1,0 +1,11 @@
+dodge-race-game/
+│
+├── index.html
+├── style.css
+├── script.js
+└── assets/
+     ├── player.png
+     ├── computer.png
+     ├── obstacle.png
+     ├── boost.png
+     └── shield.png
