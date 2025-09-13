@@ -1,1 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-App Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .screen.active {
+            display: block;
+            opacity: 1;
+        }
+        .btn {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        canvas {
+            border: 2px solid #ffffff;
+            border-radius: 8px;
+            background: #000;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Starter Screen -->
+    <div id="starterScreen" class="screen active flex flex-col items-center justify-center space-y-6 p-4">
+        <h1 class="text-4xl font-bold mb-8 animate-pulse">Multi-App Dashboard</h1>
+        <button onclick="showScreen('passwordScreen')" class="btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg">Start Password Generator</button>
+        <button onclick="showScreen('snakeScreen')" class="btn bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg">Snake</button>
+        <button onclick="showScreen('timerScreen')" class="btn bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg">Timer</button>
+        <button onclick="showScreen('calculatorScreen')" class="btn bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg">Calculator</button>
+        <button onclick="showScreen('rpsScreen')" class="btn bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg">Rock Paper Scissors</button>
+    </div>
 
+    <!-- Password Generator Screen -->
+    <div id="passwordScreen" class="screen flex flex-col items-center justify-center space-y-6 p-4">
+        <h2 class="text-3xl font-bold">Password Generator</h2>
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <input id="passwordOutput" type="text" readonly class="w-full p-3 bg-gray-900 text-white rounded mb-4" placeholder="Generated Password">
+            <div class="flex flex-col space-y-4">
+                <label class="flex items-center">
+                    <input id="lengthInput" type="number" min="8" max="50" value="12" class="w-20 p-2 bg-gray-900 text-white rounded mr-2">
+                    <span>Length</span>
+                </label>
+                <label><input id="upperCheck" type="checkbox" checked> Uppercase</label>
+                <label><input id="lowerCheck" type="checkbox" checked> Lowercase</label>
+                <label><input id="numberCheck" type="checkbox" checked> Numbers</label>
+                <label><input id="symbolCheck" type="checkbox" checked> Symbols</label>
+                <button onclick="generatePassword()" class="btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">Generate</button>
+                <button onclick="copyPassword()" class="btn bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded">Copy</button>
+            </div>
+        </div>
+        <button onclick="showScreen('starterScreen')" class="btn bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded">Back</button>
+    </div>
+
+    <!-- Snake Game Screen -->
+    <div id="snakeScreen" class="screen flex flex-col items-center justify-center space-y-6 p-4">
+        <h2 class="text-3xl font-bold">Snake Game</h2>
+        <canvas id="snakeCanvas" width="400" height="400"></canvas>
+        <p class="text-lg">Score: <span id="snakeScore">0</span></p>
+        <button onclick="startSnakeGame()" class="btn bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded">Start Game</button>
+        <button onclick="showScreen('starterScreen')" class="btn bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded">Back</button>
+    </div>
+
+    <!-- Timer Screen -->
+    <div id="timerScreen" class="screen flex flex-col items-center justify-center space-y-6 p-4">
+        <h2 class="text-3xl font-bold">Timer</h2>
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <input id="timerInput" type="number" min="1" value="60" class="w-full p-3 bg-gray-900 text-white rounded mb-4" placeholder="Seconds">
+            <div class="text-4xl font-mono mb-4" id="timerDisplay">01:00</div>
+            <div class="flex space-x-4">
+                <button onclick="startTimer()" class="btn bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded">Start</button>
+                <button onclick="pauseTimer()" class="btn bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded">Pause</button>
+                <button onclick="resetTimer()" class="btn bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded">Reset</button>
+            </div>
+        </div>
+        <button onclick="showScreen('starterScreen')" class="btn bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded">Back</button>
+    </div>
+
+    <!-- Calculator Screen -->
+    <div id="calculatorScreen" class="screen flex flex-col items-center justify-center space-y-6 p-4">
+        <h2 class="text-3xl font-bold">Calculator</h2>
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <input id="calcDisplay" type="text" readonly class="w-full p-3 bg-gray-900 text-white text-right text-2xl rounded mb-4" value="0">
+            <div class="grid grid-cols-4 gap-2">
+                <button onclick="clearCalc()" class="btn bg-red-600 hover:bg-red-700 text-white py-2 rounded">C</button>
+                <button onclick="appendCalc('(')" class="btn bg-gray-600 hover:bg-gray-700 text-white py-2 rounded">(</button>
+                <button onclick="appendCalc(')')" class="btn bg-gray-600 hover:bg-gray-700 text-white py-2 rounded">)</button>
+                <button onclick="appendCalc('/')" class="btn bg-gray-600 hover:bg-gray-700 text-white py-2 rounded">/</button>
+                <button onclick="appendCalc('7')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded">7</button>
+                <button onclick="appendCalc('8')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded">8</button>
+                <button onclick="appendCalc('9')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded">9</button>
+                <button onclick="appendCalc('*')" class="btn bg-gray-600 hover:bg-gray-700 text-white py-2 rounded">×</button>
+                <button onclick="appendCalc('4')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded">4</button>
+                <button onclick="appendCalc('5')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded">5</button>
+                <button onclick="appendCalc('6')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded">6</button>
+                <button onclick="appendCalc('-')" class="btn bg-gray-600 hover:bg-gray-700 text-white py-2 rounded">-</button>
+                <button onclick="appendCalc('1')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded">1</button>
+                <button onclick="appendCalc('2')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded">2</button>
+                <button onclick="appendCalc('3')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded">3</button>
+                <button onclick="appendCalc('+')" class="btn bg-gray-600 hover:bg-gray-700 text-white py-2 rounded">+</button>
+                <button onclick="appendCalc('0')" class="btn bg-gray-700 hover:bg-gray-600 text-white py-2 rounded col-span-2">0</button>
+                <button onclick="appendCalc('.')" class="btn bg-gray-600 hover:bg-gray-700 text-white py-2 rounded">.</button>
+                <button onclick="calculate()" class="btn bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">=</button>
+            </div>
+        </div>
+        <button onclick="showScreen('starterScreen')" class="btn bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded">Back</button>
+    </div>
+
+    <!-- Rock Paper Scissors Screen -->
+    <div id="rpsScreen" class="screen flex flex-col items-center justify-center space-y-6 p-4">
+        <h2 class="text-3xl font-bold">Rock Paper Scissors</h2>
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <div class="flex justify-between mb-4">
+                <div>
+                    <p class="text-lg">You: <span id="playerChoice">-</span></p>
+                    <p class="text-lg">Score: <span id="playerScore">0</span></p>
+                </div>
+                <div>
+                    <p class="text-lg">AI: <span id="aiChoice">-</span></p>
+                    <p class="text-lg">Score: <span id="aiScore">0</span></p>
+                </div>
+            </div>
+            <p id="rpsResult" class="text-xl font-semibold mb-4 text-center">-</p>
+            <div class="flex space-x-4 justify-center">
+                <button onclick="playRPS('rock')" class="btn bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Rock</button>
+                <button onclick="playRPS('paper')" class="btn bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">Paper</button>
+                <button onclick="playRPS('scissors')" class="btn bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded">Scissors</button>
+            </div>
+        </div>
+        <button onclick="showScreen('starterScreen')" class="btn bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded">Back</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
